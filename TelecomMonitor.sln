@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelecomMonitor.Domain", "TelecomMonitor.Domain\TelecomMonitor.Domain.csproj", "{816D539B-F097-4419-86A4-28B4A40BB0CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelecomMonitor.Infrastructure", "TelecomMonitor.Infrastructure\TelecomMonitor.Infrastructure.csproj", "{3A07F981-5CD9-432B-81E1-784433425728}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelecomMonitor.Api", "TelecomMonitor.Api\TelecomMonitor.Api.csproj", "{859A820C-1344-4889-B199-AE9CF568A440}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelecomMonitor.Simulator", "TelecomMonitor.Simulator\TelecomMonitor.Simulator.csproj", "{1309E37E-7F97-465B-B307-53463A817B73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{816D539B-F097-4419-86A4-28B4A40BB0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{816D539B-F097-4419-86A4-28B4A40BB0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{816D539B-F097-4419-86A4-28B4A40BB0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{816D539B-F097-4419-86A4-28B4A40BB0CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A07F981-5CD9-432B-81E1-784433425728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A07F981-5CD9-432B-81E1-784433425728}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A07F981-5CD9-432B-81E1-784433425728}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A07F981-5CD9-432B-81E1-784433425728}.Release|Any CPU.Build.0 = Release|Any CPU
+		{859A820C-1344-4889-B199-AE9CF568A440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859A820C-1344-4889-B199-AE9CF568A440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859A820C-1344-4889-B199-AE9CF568A440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859A820C-1344-4889-B199-AE9CF568A440}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1309E37E-7F97-465B-B307-53463A817B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1309E37E-7F97-465B-B307-53463A817B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1309E37E-7F97-465B-B307-53463A817B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1309E37E-7F97-465B-B307-53463A817B73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
