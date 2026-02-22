@@ -1,6 +1,8 @@
+using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using TelecomMonitor.Api.DTOs;
+using TelecomMonitor.Api.Mapping;
 using TelecomMonitor.Api.Validators;
 using TelecomMonitor.Domain.Entities;
 using TelecomMonitor.Infrastructure;
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEventRequestValidator>();
+builder.Services.AddAutoMapper(typeof(EventMappingProfile));
 
 var app = builder.Build();
 
@@ -31,7 +34,8 @@ app.UseHttpsRedirection();
 app.MapPost("/api/events", async (
     CreateEventRequest request,
     IValidator<CreateEventRequest> validator,
-    AppDbContext db
+    AppDbContext db,
+    IMapper mapper
 ) =>
 {
     var validation = await validator.ValidateAsync(request);
@@ -40,13 +44,7 @@ app.MapPost("/api/events", async (
         return Results.BadRequest(validation.Errors);
     }
 
-    var entity = new Event
-    {
-        DeviceId = request.DeviceId,
-        Severity = request.Severity,
-        Message = request.Message,
-        Timestamp = request.Timestamp
-    };
+    var entity = mapper.Map<Event>(request);
 
     db.Events.Add(entity);
     await db.SaveChangesAsync();
@@ -55,21 +53,15 @@ app.MapPost("/api/events", async (
 });
 
 // GET /api/events
-app.MapGet("/api/events", async (AppDbContext db) =>
+app.MapGet("/api/events", async (AppDbContext db, IMapper mapper) =>
 {
     var events = await db.Events
         .OrderByDescending(e => e.Timestamp)
-        .Select(e => new EventResponse
-        {
-            Id = e.Id,
-            DeviceId = e.DeviceId,
-            Severity = e.Severity,
-            Message = e.Message,
-            Timestamp = e.Timestamp
-        })
         .ToListAsync();
 
-    return Results.Ok(events);
+    var response = mapper.Map<List<EventResponse>>(events);
+
+    return Results.Ok(response);
 });
 
 // GET /api/events/stats
