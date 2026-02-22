@@ -53,9 +53,37 @@ app.MapPost("/api/events", async (
 });
 
 // GET /api/events
-app.MapGet("/api/events", async (AppDbContext db, IMapper mapper) =>
+/// <summary>
+/// Returns events with optional filtering.
+/// </summary>
+app.MapGet("/api/events", async (
+    AppDbContext db,
+    IMapper mapper,
+    string? deviceId,
+    string? severity,
+    DateTime? from,
+    DateTime? to
+) =>
 {
-    var events = await db.Events
+    var query = db.Events.AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(deviceId)) {
+        query = query.Where(e => e.DeviceId == deviceId);
+    }
+
+    if (!string.IsNullOrWhiteSpace(severity)) {
+        query = query.Where(e => e.Severity == severity);
+    }
+
+    if (from.HasValue) {
+        query = query.Where(e => e.Timestamp >= from.Value);
+    }
+
+    if (to.HasValue) {
+        query = query.Where(e => e.Timestamp <= to.Value);
+    }
+
+    var events = await query
         .OrderByDescending(e => e.Timestamp)
         .ToListAsync();
 
