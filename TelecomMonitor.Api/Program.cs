@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using TelecomMonitor.Api.DTOs;
 using TelecomMonitor.Api.Mapping;
 using TelecomMonitor.Api.Validators;
@@ -126,5 +127,55 @@ app.MapGet("/api/events/stats", async (AppDbContext db) =>
     return Results.Ok(stats);
 });
 
+Process? simulatorProcess = null;
+
+app.MapPost("/api/simulator/start", () => 
+{
+    if (simulatorProcess != null && !simulatorProcess.HasExited)
+        return Results.Ok("Already running.");
+
+    var psi = new ProcessStartInfo
+    {
+        FileName = "dotnet",
+        Arguments = "run --project TelecomMonitor.Simulator",
+        WorkingDirectory = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false,
+        CreateNoWindow = false
+    };
+
+    simulatorProcess = Process.Start(psi);
+
+    if (simulatorProcess == null)
+        return Results.Problem("Failed to start simulator process.");
+
+    simulatorProcess.OutputDataReceived += (_, e) => Console.WriteLine(e.Data);
+    simulatorProcess.ErrorDataReceived += (_, e) => Console.WriteLine("ERR: " + e.Data);
+
+    simulatorProcess.BeginOutputReadLine();
+    simulatorProcess.BeginErrorReadLine();
+
+    return Results.Ok("Simulator started.");
+});
+
+app.MapPost("/api/simulator/stop", () =>
+{
+    if (simulatorProcess != null && !simulatorProcess.HasExited)
+    {
+        simulatorProcess.Kill();
+        simulatorProcess = null;
+        return Results.Ok("Simulator stopped.");
+    }
+
+    return Results.Ok("Simulator was not running.");
+});
+
+app.MapGet("/api/simulator/status", () =>
+{
+    return simulatorProcess != null && !simulatorProcess.HasExited
+        ? Results.Ok(new { running = true })
+        : Results.Ok(new { running = false });
+});
 
 app.Run();
