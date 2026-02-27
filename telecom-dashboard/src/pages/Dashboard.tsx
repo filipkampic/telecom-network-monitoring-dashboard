@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getEvents, getStats } from '../api/eventsApi';
 import type { Event } from '../types/Event';
 import EventsTable from '../components/EventsTable';

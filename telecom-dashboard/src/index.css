@@ -54,6 +54,41 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.events-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.events-table th:nth-child(1),
+.events-table td:nth-child(1) {
+  width: 20%;
+}
+.events-table th:nth-child(2),
+.events-table td:nth-child(2) {
+  width: 15%;
+}
+.events-table th:nth-child(3),
+.events-table td:nth-child(3) {
+  width: 45%;
+}
+.events-table th:nth-child(4),
+.events-table td:nth-child(4) {
+  width: 20%;
+}
+.events-table th,
+.events-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-emphasis: none;
+}
+.table-container {
+  overflow-x: auto;
+}
+
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
