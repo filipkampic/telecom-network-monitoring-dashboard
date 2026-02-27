@@ -32,39 +32,40 @@ export default function Dashboard() {
             .then(data => setSimRunning(data.running));
     }, []);
 
+    function toggleSimulator() {
+        const endpoint = simRunning ? "stop" : "start";
+
+        fetch(`http://localhost:5102/api/simulator/${endpoint}`, {
+            method: "POST"
+        }).then(res => {
+            if (res.ok) setSimRunning(!simRunning);
+        });
+    }
+
     return (
-        <div style={{ padding: 20 }}>
-            <h1>Telecom Monitoring Dashboard</h1>
-            <button
-                onClick={() => {
-                    const endpoint = simRunning
-                    ? "stop"
-                    : "start";
+        <div className="dashboard-container">
+            <h1 style={{ marginBottom: "24px" }}>Telecom Monitoring Dashboard</h1>
 
-                    fetch(`http://localhost:5102/api/simulator/${endpoint}`, {
-                    method: "POST"
-                    })
-                    .then(res => {
-                        if (res.ok) setSimRunning(!simRunning);
-                    });
-                }}
-                style={{
-                    padding: "10px 20px",
-                    borderRadius: "6px",
-                    border: "none",
-                    cursor: "pointer",
-                    backgroundColor: simRunning ? "#d9534f" : "#5cb85c",
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: "16px"
-                }}
-                >
-                {simRunning ? "Stop Simulator" : "Start Simulator"}
-            </button>
+            <div className="card" style={{ display: "flex", justifyContent: "flex-start" }}>
+                <button
+                    className={`sim-btn ${simRunning ? "sim-stop" : "sim-start"}`}
+                    onClick={toggleSimulator}
+                >     
+                    {simRunning ? "Stop Simulator" : "Start Simulator"}
+                </button>
+            </div>
 
-            <Filters onChange={setFilters} />
-            <StatsPanel stats={stats} />
-            <EventsTable events={events} />
+            <div className="card">
+                <Filters onChange={setFilters} />
+            </div>
+
+            <div className="card">
+                <StatsPanel stats={stats} />
+            </div>
+
+            <div className="card">
+                <EventsTable events={events} />
+            </div>
         </div>
     );
 }
