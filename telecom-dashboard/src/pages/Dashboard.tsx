@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { getEvents, getStats } from '../api/eventsApi';
 import type { Event } from '../types/Event';
 import EventsTable from '../components/EventsTable';
@@ -10,6 +10,8 @@ export default function Dashboard() {
     const [stats, setStats] = useState<any>(null);
     const [filters, setFilters] = useState({});
     const [simRunning, setSimRunning] = useState(false);
+    const [page, setPage] = useState(1);
+    const pageSize = 20;
     
     async function loadData() {
         const [ev, st] = await Promise.all([
@@ -18,6 +20,7 @@ export default function Dashboard() {
         ]);
         setEvents(ev);
         setStats(st);
+        setPage(1);
     }
 
     useEffect(() => {
@@ -31,6 +34,10 @@ export default function Dashboard() {
             .then(res => res.json())
             .then(data => setSimRunning(data.running));
     }, []);
+
+    const totalPages = Math.max(1, Math.ceil(events.length / pageSize));
+    const start = (page - 1) * pageSize;
+    const visibleEvents = events.slice(start, start + pageSize);
 
     function toggleSimulator() {
         const endpoint = simRunning ? "stop" : "start";
@@ -55,6 +62,7 @@ export default function Dashboard() {
                 </button>
             </div>
 
+            
             <div className="card">
                 <Filters onChange={setFilters} />
             </div>
@@ -64,7 +72,25 @@ export default function Dashboard() {
             </div>
 
             <div className="card">
-                <EventsTable events={events} />
+                <EventsTable events={visibleEvents} />
+
+                <div className="pagination">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage(page - 1)}
+                    > 
+                        Previous
+                    </button>
+
+                    <span>Page {page} / {totalPages}</span>
+
+                    <button
+                        disabled={page === totalPages}
+                        onClick={() => setPage(page + 1)}
+                    > 
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     );

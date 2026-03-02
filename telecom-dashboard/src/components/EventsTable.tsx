@@ -16,7 +16,7 @@ export default function EventsTable({ events }: { events: Event[] }) {
                     {events.map(e => (
                         <tr key={e.id}>
                             <td>{e.deviceId}</td>
-                            <td>{e.severity}</td>
+                            <td className={`severity-${e.severity.toLowerCase()}`}>{e.severity}</td>
                             <td>{e.message}</td>
                             <td>{new Date(e.timestamp).toLocaleString()}</td>
                         </tr>

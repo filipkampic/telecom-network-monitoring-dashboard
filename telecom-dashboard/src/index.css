@@ -75,6 +75,97 @@ button:focus-visible {
   margin-bottom: 24px;
 }
 
+.sim-btn {
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.sim-btn:active {
+  transform: scale(0.97);
+}
+
+.sim-start {
+  background: var(--success);
+  color: white;
+}
+
+.sim-start:hover {
+  background: #15803d;
+}
+
+.sim-stop {
+  background: var(--error);
+  color: white;
+}
+
+.sim-stop:hover {
+  background: #b91c1c;
+}
+
+.filter-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filter-row input,
+.filter-row select {
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 14px;
+}
+
+.filter-row button {
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.filter-row button:hover {
+  background: var(--primary-hover);
+}
+
+.filter-wrapper {
+  margin: 20px 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
 .events-table {
   width: 100%;
   table-layout: fixed;
@@ -109,6 +200,67 @@ button:focus-visible {
   overflow-x: auto;
 }
 
+.events-table thead {
+  background: #f0f2f5;
+}
+
+.events-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-light);
+  border-bottom: 2px solid var(--border);
+}
+
+.events-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.events-table tr:hover {
+  background: #f9fafb;
+}
+
+.severity-error {
+  color: var(--error);
+  font-weight: 600;
+}
+
+.severity-warning {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.severity-info {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination span {
+  font-size: 14px;
+  color: var(--text-light);
+}
 
 @media (prefers-color-scheme: light) {
   :root {
