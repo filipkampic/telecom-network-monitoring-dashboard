@@ -1,9 +1,10 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getEvents, getStats } from '../api/eventsApi';
 import type { Event } from '../types/Event';
 import EventsTable from '../components/EventsTable';
 import StatsPanel from '../components/StatsPanel';
 import Filters from '../components/Filters';
+import EventsCharts from '../components/EventsCharts';
 
 export default function Dashboard() {
     const [events, setEvents] = useState<Event[]>([]);
@@ -69,6 +70,10 @@ export default function Dashboard() {
 
             <div className="card">
                 <StatsPanel stats={stats} />
+            </div>
+
+            <div className="card">
+                <EventsCharts events={events} stats={stats} />
             </div>
 
             <div className="card">
