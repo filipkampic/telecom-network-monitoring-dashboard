@@ -267,6 +267,12 @@ button:focus-visible {
   color: var(--text-light);
 }
 
+.device-status-list {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

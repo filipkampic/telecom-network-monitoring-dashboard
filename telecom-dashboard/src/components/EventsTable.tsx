@@ -18,7 +18,7 @@ export default function EventsTable({ events }: { events: Event[] }) {
                             <td>{e.deviceId}</td>
                             <td className={`severity-${e.severity.toLowerCase()}`}>{e.severity}</td>
                             <td>{e.message}</td>
-                            <td>{new Date(e.timestamp).toLocaleString()}</td>
+                            <td>{new Date(e.timestamp + "Z").toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>
