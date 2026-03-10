@@ -64,9 +64,14 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            
-            <div className="card">
-                <Filters onChange={setFilters} />
+            <div className="card two-column">
+                <div className="filters-column">
+                    <Filters onChange={setFilters} />
+                </div>
+
+                <div className="device-column">
+                    <DeviceStatusList events={events} />
+                </div>
             </div>
 
             <div className="card">
@@ -75,10 +80,6 @@ export default function Dashboard() {
 
             <div className="card">
                 <EventsCharts events={events} stats={stats} />
-            </div>
-
-            <div className="card">
-                <DeviceStatusList events={events} />
             </div>
 
             <div className="card">

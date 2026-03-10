@@ -14,7 +14,7 @@ export function DeviceStatusList({ events }: { events: Event[] }) {
     return (
         <div className="card">
             <h3>Device Status</h3>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0} }>
+            <ul className="device-list">
                 {deviceEntries.map(([device, deviceEvents]) => {
                     const status = getDeviceStatus(deviceEvents);
                     return (

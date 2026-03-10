@@ -80,6 +80,19 @@ button:focus-visible {
   color: var(--text-light);
 }
 
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.two-column .left,
+.two-column .right {
+  display: flex;
+  flex-direction: column;
+}
+
 .sim-btn {
   padding: 12px 20px;
   border-radius: var(--radius);
@@ -111,22 +124,24 @@ button:focus-visible {
   background: #b91c1c;
 }
 
-.filter-row {
+.filters {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  align-items: center;
+  width: 260px;
 }
 
-.filter-row input,
-.filter-row select {
+.filters input,
+.filters select {
   padding: 10px 12px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: #fff;
   font-size: 14px;
+  width: 100%;
 }
 
-.filter-row button {
+.filters button {
   padding: 10px 18px;
   border-radius: var(--radius);
   border: none;
@@ -135,14 +150,34 @@ button:focus-visible {
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease;
+  width: 140px;
+  align-self: center;
 }
 
-.filter-row button:hover {
+.filters button:hover {
   background: var(--primary-hover);
 }
 
-.filter-wrapper {
-  margin: 20px 0;
+.filters-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;¸
+  width: 100%;
+}
+
+.device-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.device-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .stats-grid {
@@ -267,12 +302,6 @@ button:focus-visible {
   color: var(--text-light);
 }
 
-.device-status-list {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -283,5 +312,11 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@media (max-width: 900px) {
+  .two-column {
+    grid-template-columns: 1fr;
   }
 }
