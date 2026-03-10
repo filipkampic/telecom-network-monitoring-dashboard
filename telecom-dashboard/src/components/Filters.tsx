@@ -8,7 +8,7 @@ export default function Filters({ onChange }: { onChange: (f: any) => void }) {
 
     function apply() {
         onChange({
-            deviceId: deviceId || undefined,
+            deviceId: deviceId.trim().toLowerCase() || undefined,
             severity: severity || undefined,
             from: from || undefined,
             to: to || undefined
