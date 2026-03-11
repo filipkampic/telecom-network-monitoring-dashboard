@@ -19,9 +19,9 @@ export default function EventsCharts({
     stats: Stats | null 
 }) {
     const severityData = [
-        { name: "Errors", value: stats?.errors || 0 },
-        { name: "Warnings", value: stats?.warnings || 0 },
-        { name: "Info", value: stats?.info || 0 }
+        { name: "Errors", value: events.filter(e => e.severity === "Error").length },
+        { name: "Warnings", value: events.filter(e => e.severity === "Warning").length },
+        { name: "Info", value: events.filter(e => e.severity === "Info").length }
     ];
 
     const COLORS = ["var(--error)", "var(--warning)", "var(--success)"];
