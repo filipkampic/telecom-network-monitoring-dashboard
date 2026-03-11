@@ -6,17 +6,10 @@ import {
 } from "recharts";
 import type { Event } from "../types/Event";
 
-type Stats = {
-    errors: number;
-    warnings: number;
-    info: number;
-}
-
 export default function EventsCharts({ 
-    events, stats 
+    events 
 }: { 
-    events: Event[], 
-    stats: Stats | null 
+    events: Event[]
 }) {
     const severityData = [
         { name: "Errors", value: events.filter(e => e.severity === "Error").length },

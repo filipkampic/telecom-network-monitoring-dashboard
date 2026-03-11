@@ -79,7 +79,7 @@ export default function Dashboard() {
             </div>
 
             <div className="card">
-                <EventsCharts events={events} stats={stats} />
+                <EventsCharts events={events}/>
             </div>
 
             <div className="card">
