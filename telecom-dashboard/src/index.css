@@ -146,20 +146,36 @@ button:focus-visible {
   min-width: 0;
 }
 
-.filters button {
-  padding: 10px 18px;
-  border-radius: var(--radius);
-  border: none;
-  background: var(--primary);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s ease;
-  width: 140px;
-  align-self: center;
+.filters-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }
 
-.filters button:hover {
+.btn-primary,
+.btn-secondary {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.filters .btn-primary:hover {
   background: var(--primary-hover);
 }
 

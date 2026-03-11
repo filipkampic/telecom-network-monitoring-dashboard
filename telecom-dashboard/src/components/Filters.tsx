@@ -42,7 +42,19 @@ export default function Filters({ onChange }: { onChange: (f: any) => void }) {
                 onChange={e => setTo(e.target.value)}
              />
 
-             <button onClick={apply}>Apply</button>
-         </div>
+            <div className="filters-actions"> 
+                <button className="btn-primary" onClick={apply}>Apply</button>
+
+                <button className="btn-secondary" onClick={() => {
+                    setDeviceId("");
+                    setSeverity("");
+                    setFrom("");
+                    setTo("");
+                    onChange({});
+                }}>
+                    Clear
+                </button>
+            </div>
+        </div>
     );
 }
