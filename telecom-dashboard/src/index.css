@@ -1,3 +1,7 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   --bg: #f5f7fa;
   --card-bg: #ffffff;
@@ -139,6 +143,7 @@ button:focus-visible {
   background: #fff;
   font-size: 14px;
   width: 100%;
+  min-width: 0;
 }
 
 .filters button {
