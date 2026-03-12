@@ -45,7 +45,7 @@ export default function EventsCharts({
     );
 
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
+        <div className="charts-grid">
             <div className="card">
                 <h3>Events by Severity</h3>
                 <ResponsiveContainer width="100%" height={250}>

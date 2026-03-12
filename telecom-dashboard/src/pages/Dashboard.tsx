@@ -64,43 +64,46 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            <div className="card two-column">
-                <div className="filters-column">
-                    <Filters onChange={setFilters} />
+            <div className="dashboard-content">
+        
+                <div className="card two-column">
+                    <div className="filters-column">
+                        <Filters onChange={setFilters} />
+                    </div>
+
+                    <div className="device-column">
+                        <DeviceStatusList events={events} />
+                    </div>
                 </div>
 
-                <div className="device-column">
-                    <DeviceStatusList events={events} />
+                <div className="card">
+                    <StatsPanel stats={stats} />
                 </div>
-            </div>
 
-            <div className="card">
-                <StatsPanel stats={stats} />
-            </div>
+                <div className="card">
+                    <EventsCharts events={events}/>
+                </div>
 
-            <div className="card">
-                <EventsCharts events={events}/>
-            </div>
+                <div className="card">
+                    <EventsTable events={visibleEvents} />
 
-            <div className="card">
-                <EventsTable events={visibleEvents} />
+                    <div className="pagination">
+                        <button
+                            disabled={page === 1}
+                            onClick={() => setPage(page - 1)}
+                        > 
+                            Previous
+                        </button>
 
-                <div className="pagination">
-                    <button
-                        disabled={page === 1}
-                        onClick={() => setPage(page - 1)}
-                    > 
-                        Previous
-                    </button>
+                        <span>Page {page} / {totalPages}</span>
 
-                    <span>Page {page} / {totalPages}</span>
-
-                    <button
-                        disabled={page === totalPages}
-                        onClick={() => setPage(page + 1)}
-                    > 
-                        Next
-                    </button>
+                        <button
+                            disabled={page === totalPages}
+                            onClick={() => setPage(page + 1)}
+                        > 
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
