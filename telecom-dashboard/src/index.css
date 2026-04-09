@@ -347,6 +347,41 @@ button:focus-visible {
   }
 }
 
+@media(prefers-color-scheme: dark){
+  :root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-light: #94a3b8;
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .card {
+    background: var(--card-bg);
+    color: var(--text);
+  }
+
+  .events-table thead {
+    background: #1e293b;
+  }
+
+  .events-table tr:hover {
+    background: #273449;
+  }
+
+  .pagination button {
+    background: var(--card-bg);
+    border-color: var(--border);
+    color: var(--text);
+  }
+}
+
 @media (max-width: 900px) {
   .two-column {
     grid-template-columns: 1fr;
