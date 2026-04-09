@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getEvents, getStats } from '../api/eventsApi';
 import type { Event } from '../types/Event';
 import EventsTable from '../components/EventsTable';
@@ -6,13 +6,24 @@ import StatsPanel from '../components/StatsPanel';
 import Filters from '../components/Filters';
 import EventsCharts from '../components/EventsCharts';
 import { DeviceStatusList } from '../components/DeviceStatusList';
+import * as signalR from "@microsoft/signalr";
+
+type Stats = {
+    totalEvents: number;
+    errors: number;
+    warnings: number;
+    info: number;
+    generatedAt: string;
+};
 
 export default function Dashboard() {
     const [events, setEvents] = useState<Event[]>([]);
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<Stats | null>(null);
     const [filters, setFilters] = useState({});
     const [simRunning, setSimRunning] = useState(false);
     const [page, setPage] = useState(1);
+    const pageRef = useRef(page);
+    const filtersRef = useRef(filters);
     const pageSize = 20;
     
     async function loadData() {
@@ -27,14 +38,77 @@ export default function Dashboard() {
 
     useEffect(() => {
         loadData();
-        const interval = setInterval(loadData, 10000);
-        return () => clearInterval(interval);
     }, [filters]);
 
     useEffect(() => {
         fetch("http://localhost:5102/api/simulator/status")
             .then(res => res.json())
             .then(data => setSimRunning(data.running));
+    }, []);
+
+    useEffect(() => {
+        pageRef.current = page;
+    }, [page]);
+
+    useEffect(() => {
+        filtersRef.current = filters;
+    }, [filters]);
+
+    function checkFilters(event: Event, filters: any) {
+        if (!filters || Object.keys(filters).length === 0) return true;
+        
+        if (filters.deviceId && event.deviceId !== filters.deviceId)
+            return false;
+
+        if (filters.severity && event.severity !== filters.severity)
+            return false;
+
+        if (filters.from && new Date(event.timestamp) < new Date(filters.from))
+            return false;
+
+        if (filters.to && new Date(event.timestamp) > new Date(filters.to))
+            return false;
+
+        return true;
+    }
+
+    useEffect(() => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:5102/eventsHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start().then(() => {
+            connection.on("NewEvent", (raw: any) => {
+                const newEvent: Event = {
+                    id: raw.id ?? raw.Id,
+                    deviceId: raw.deviceId ?? raw.DeviceId,
+                    severity: raw.severity ?? raw.Severity,
+                    message: raw.message ?? raw.Message,
+                    timestamp: raw.timestamp ?? raw.Timestamp,
+                };
+
+                if (pageRef.current === 1 && checkFilters(newEvent, filtersRef.current)) {
+                    setEvents(prev => [newEvent, ...prev]);
+                }
+
+                setStats(prev => {
+                    if (!prev) return prev;
+
+                    return {
+                        totalEvents: prev.totalEvents + 1,
+                        errors: prev.errors + (newEvent.severity === "Error" ? 1 : 0),
+                        warnings: prev.warnings + (newEvent.severity === "Warning" ? 1 : 0),
+                        info: prev.info + (newEvent.severity === "Info" ? 1 : 0),
+                        generatedAt: new Date().toISOString()
+                    };
+                });
+            });
+        });
+
+        return () => {
+            connection.stop();
+        }
     }, []);
 
     const totalPages = Math.max(1, Math.ceil(events.length / pageSize));

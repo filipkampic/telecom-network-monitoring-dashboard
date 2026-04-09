@@ -1,12 +1,18 @@
 using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
 using TelecomMonitor.Api.DTOs;
+using TelecomMonitor.Api.Hubs;
 using TelecomMonitor.Api.Mapping;
 using TelecomMonitor.Api.Validators;
+using TelecomMonitor.Api.Converters;
 using TelecomMonitor.Domain.Entities;
 using TelecomMonitor.Infrastructure;
+using Newtonsoft.Json.Converters;
+using IsoDateTimeConverter = TelecomMonitor.Api.Converters.IsoDateTimeConverter;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,11 +33,19 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://localhost:5173")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEventRequestValidator>();
 builder.Services.AddAutoMapper(typeof(EventMappingProfile));
+builder.Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.PayloadSerializerOptions.Converters.Add(new IsoDateTimeConverter());
+    });
+
 
 var app = builder.Build();
 app.UseCors("AllowFrontend");
@@ -50,7 +64,8 @@ app.MapPost("/api/events", async (
     CreateEventRequest request,
     IValidator<CreateEventRequest> validator,
     AppDbContext db,
-    IMapper mapper
+    IMapper mapper,
+    IHubContext<EventsHub> hub
 ) =>
 {
     var validation = await validator.ValidateAsync(request);
@@ -61,8 +76,11 @@ app.MapPost("/api/events", async (
 
     var entity = mapper.Map<Event>(request);
 
+    entity.Timestamp = DateTime.UtcNow;
+
     db.Events.Add(entity);
     await db.SaveChangesAsync();
+    await hub.Clients.All.SendAsync("NewEvent", entity);
 
     return Results.Created($"/api/events/{entity.Id}", entity.Id);
 });
@@ -177,5 +195,7 @@ app.MapGet("/api/simulator/status", () =>
         ? Results.Ok(new { running = true })
         : Results.Ok(new { running = false });
 });
+
+app.MapHub<EventsHub>("/eventsHub");
 
 app.Run();
