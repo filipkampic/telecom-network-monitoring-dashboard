@@ -22,18 +22,24 @@ export default function Dashboard() {
     const [filters, setFilters] = useState({});
     const [simRunning, setSimRunning] = useState(false);
     const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [connected, setConnected] = useState(false);
     const pageRef = useRef(page);
     const filtersRef = useRef(filters);
     const pageSize = 20;
     
     async function loadData() {
+        setLoading(true);
+
         const [ev, st] = await Promise.all([
             getEvents(filters),
             getStats()
         ]);
+
         setEvents(ev);
         setStats(st);
         setPage(1);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -78,37 +84,43 @@ export default function Dashboard() {
             .withAutomaticReconnect()
             .build();
 
-        connection.start().then(() => {
-            connection.on("NewEvent", (raw: any) => {
-                const newEvent: Event = {
-                    id: raw.id ?? raw.Id,
-                    deviceId: raw.deviceId ?? raw.DeviceId,
-                    severity: raw.severity ?? raw.Severity,
-                    message: raw.message ?? raw.Message,
-                    timestamp: raw.timestamp ?? raw.Timestamp,
+        connection.start()
+            .then(() => {
+                setConnected(true);
+            })
+            .catch(() => {
+                setConnected(false);
+            });
+
+        connection.on("NewEvent", (raw: any) => {
+            const newEvent: Event = {
+                id: raw.id ?? raw.Id,
+                deviceId: raw.deviceId ?? raw.DeviceId,
+                severity: raw.severity ?? raw.Severity,
+                message: raw.message ?? raw.Message,
+                timestamp: raw.timestamp ?? raw.Timestamp,
+            };
+
+            if (pageRef.current === 1 && checkFilters(newEvent, filtersRef.current)) {
+                setEvents(prev => [newEvent, ...prev]);
+            }
+
+            setStats(prev => {
+                if (!prev) return prev;
+
+                return {
+                    totalEvents: prev.totalEvents + 1,
+                    errors: prev.errors + (newEvent.severity === "Error" ? 1 : 0),
+                    warnings: prev.warnings + (newEvent.severity === "Warning" ? 1 : 0),
+                    info: prev.info + (newEvent.severity === "Info" ? 1 : 0),
+                    generatedAt: new Date().toISOString()
                 };
-
-                if (pageRef.current === 1 && checkFilters(newEvent, filtersRef.current)) {
-                    setEvents(prev => [newEvent, ...prev]);
-                }
-
-                setStats(prev => {
-                    if (!prev) return prev;
-
-                    return {
-                        totalEvents: prev.totalEvents + 1,
-                        errors: prev.errors + (newEvent.severity === "Error" ? 1 : 0),
-                        warnings: prev.warnings + (newEvent.severity === "Warning" ? 1 : 0),
-                        info: prev.info + (newEvent.severity === "Info" ? 1 : 0),
-                        generatedAt: new Date().toISOString()
-                    };
-                });
             });
         });
 
         return () => {
             connection.stop();
-        }
+        };
     }, []);
 
     const totalPages = Math.max(1, Math.ceil(events.length / pageSize));
@@ -123,6 +135,15 @@ export default function Dashboard() {
         }).then(res => {
             if (res.ok) setSimRunning(!simRunning);
         });
+    }
+
+    if (loading) {
+        return (
+            <div className="dashboard-container">
+                <h1>Telecom Monitoring Dashboard</h1>
+                <div className="card">Loading…</div>
+            </div>
+        );
     }
 
     return (
@@ -151,33 +172,41 @@ export default function Dashboard() {
                 </div>
 
                 <div className="card">
-                    <StatsPanel stats={stats} />
+                    {stats ? <StatsPanel stats={stats} /> : <p>Loading stats…</p>}
                 </div>
 
                 <div className="card">
-                    <EventsCharts events={events}/>
+                    {events.length === 0
+                        ? <p>No chart data</p>
+                        : <EventsCharts events={events} />
+                    }
                 </div>
 
                 <div className="card">
-                    <EventsTable events={visibleEvents} />
+                    {events.length === 0
+                        ? <p>No events yet</p>
+                        : <EventsTable events={visibleEvents} />
+                    }
 
-                    <div className="pagination">
-                        <button
-                            disabled={page === 1}
-                            onClick={() => setPage(page - 1)}
-                        > 
-                            Previous
-                        </button>
+                    {events.length > 0 && (
+                        <div className="pagination">
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage(page - 1)}
+                            > 
+                                Previous
+                            </button>
 
-                        <span>Page {page} / {totalPages}</span>
+                            <span>Page {page} / {totalPages}</span>
 
-                        <button
-                            disabled={page === totalPages}
-                            onClick={() => setPage(page + 1)}
-                        > 
-                            Next
-                        </button>
-                    </div>
+                            <button
+                                disabled={page === totalPages}
+                                onClick={() => setPage(page + 1)}
+                            > 
+                                Next
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
