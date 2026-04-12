@@ -6,6 +6,8 @@ import StatsPanel from '../components/StatsPanel';
 import Filters from '../components/Filters';
 import EventsCharts from '../components/EventsCharts';
 import { DeviceStatusList } from '../components/DeviceStatusList';
+import { HealthBadge } from "../components/HealthBadge";
+import { useHealthCheck } from '../hooks/useHealthCheck';
 import * as signalR from "@microsoft/signalr";
 
 type Stats = {
@@ -27,6 +29,7 @@ export default function Dashboard() {
     const pageRef = useRef(page);
     const filtersRef = useRef(filters);
     const pageSize = 20;
+    const { online } = useHealthCheck(5000);
     
     async function loadData() {
         setLoading(true);
@@ -140,7 +143,10 @@ export default function Dashboard() {
     if (loading) {
         return (
             <div className="dashboard-container">
-                <h1>Telecom Monitoring Dashboard</h1>
+                <div className="dashboard-header">
+                    <h1>Telecom Monitoring Dashboard</h1>
+                    <HealthBadge online={online} />
+                </div>
                 <div className="card">Loading…</div>
             </div>
         );
@@ -148,7 +154,10 @@ export default function Dashboard() {
 
     return (
         <div className="dashboard-container">
-            <h1 style={{ marginBottom: "24px" }}>Telecom Monitoring Dashboard</h1>
+            <div className="dashboard-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
+                <h1 style={{ margin: 0 }}>Telecom Monitoring Dashboard</h1>
+                <HealthBadge online={online} />
+            </div>
 
             <div className="card" style={{ display: "flex", justifyContent: "flex-start" }}>
                 <button

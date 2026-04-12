@@ -18,3 +18,24 @@ export async function getStats() {
     const res = await fetch("http://localhost:5102/api/events/stats");
     return res.json();
 }
+
+export async function checkHealth(): Promise<boolean> {
+    try {
+        const res = await fetch("http://localhost:5102/api/health", {
+            method: "GET",
+            signal: AbortSignal.timeout(4000),
+        });
+        if (res.ok) return true;
+    } catch { }
+ 
+    try {
+        const res = await fetch(API_URL, {
+            method: "GET",
+            signal: AbortSignal.timeout(4000),
+        });
+        return res.ok;
+    } catch {
+        return false;
+    }
+}
+ 
