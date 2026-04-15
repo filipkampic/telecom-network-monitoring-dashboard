@@ -293,6 +293,10 @@ button:focus-visible {
   background: #f9fafb;
 }
 
+.events-table-row:hover {
+    background: #f5f7fa;
+}
+
 .severity-error {
   color: var(--error);
   font-weight: 600;

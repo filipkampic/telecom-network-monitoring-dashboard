@@ -9,6 +9,7 @@ import { DeviceStatusList } from '../components/DeviceStatusList';
 import { HealthBadge } from "../components/HealthBadge";
 import { useHealthCheck } from '../hooks/useHealthCheck';
 import * as signalR from "@microsoft/signalr";
+import EventDetailsModal from '../components/EventDetailsModal';
 
 type Stats = {
     totalEvents: number;
@@ -26,6 +27,7 @@ export default function Dashboard() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [connected, setConnected] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const pageRef = useRef(page);
     const filtersRef = useRef(filters);
     const pageSize = 20;
@@ -154,6 +156,13 @@ export default function Dashboard() {
 
     return (
         <div className="dashboard-container">
+            {selectedEvent && (
+                <EventDetailsModal
+                    event={selectedEvent}
+                    onClose={() => setSelectedEvent(null)}
+                />
+            )}
+
             <div className="dashboard-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
                 <h1 style={{ margin: 0 }}>Telecom Monitoring Dashboard</h1>
                 <HealthBadge online={online} />
@@ -194,7 +203,7 @@ export default function Dashboard() {
                 <div className="card">
                     {events.length === 0
                         ? <p>No events yet</p>
-                        : <EventsTable events={visibleEvents} />
+                        : <EventsTable events={visibleEvents} onSelect={setSelectedEvent} />
                     }
 
                     {events.length > 0 && (

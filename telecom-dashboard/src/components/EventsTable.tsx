@@ -1,6 +1,11 @@
 import type { Event } from "../types/Event";
 
-export default function EventsTable({ events }: { events: Event[] }) {
+interface Props {
+    events: Event[];
+    onSelect: (event: Event) => void;
+}
+
+export default function EventsTable({ events, onSelect }: Props) {
     return (
         <div className="table-container">
             <table className="events-table">
@@ -14,7 +19,12 @@ export default function EventsTable({ events }: { events: Event[] }) {
                 </thead>
                 <tbody>
                     {events.map(e => (
-                        <tr key={e.id}>
+                        <tr 
+                            key={e.id}
+                            onClick={() => onSelect(e)}
+                            className="events-table-row"
+                            style={{ cursor: "pointer" }}
+                        >
                             <td>{e.deviceId}</td>
                             <td className={`severity-${e.severity.toLowerCase()}`}>{e.severity}</td>
                             <td>{e.message}</td>
